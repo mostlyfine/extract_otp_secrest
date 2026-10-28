@@ -1,9 +1,12 @@
 IMAGE_NAME = extract_otp_secrets
 .DEFAULT_GOAL := help
-.PHONY: build extract clean help
+.PHONY: build decode extract clean help
 
 build: ## build docker image
 	docker build -t $(IMAGE_NAME) .
+
+decode: ## decode QR images and append to export.txt (IMAGES="a.png b.png")
+	uv run decode_qr.py $(IMAGES) >> export.txt
 
 extract: export.txt build ## extract otp secrets
 	docker run --rm -it -v $(PWD)/export.txt:/tmp/export.txt:ro $(IMAGE_NAME)

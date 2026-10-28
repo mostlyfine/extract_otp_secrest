@@ -14,6 +14,7 @@ With Docker, you can extract OTP secrets without setting up a local Python envir
 
 - Docker
 - `make` (optional; only needed if you use the Makefile)
+- [uv](https://docs.astral.sh/uv/) (optional; only needed for `make decode`)
 
 ## Usage (Recommended: Makefile)
 
@@ -35,6 +36,25 @@ To see available targets:
 ```sh
 make help
 ```
+
+## Create export.txt from QR Code Images
+
+If you have screenshots of the export QR codes from Google Authenticator, decode them and append the URLs to `export.txt`:
+
+```sh
+make decode IMAGES="$HOME/Downloads/IMG_*.PNG"
+```
+
+`make decode` runs `uv run decode_qr.py $(IMAGES) >> export.txt`. Dependencies (`opencv-python-headless`) are installed automatically by uv.
+It appends to `export.txt`, so running it twice with the same images duplicates lines. Delete `export.txt` before starting over.
+
+You can also run the script directly:
+
+```sh
+uv run decode_qr.py image1.png image2.png
+```
+
+Treat the screenshots like passwords too, and delete them when you are done.
 
 ## Usage (Docker Only)
 
@@ -98,6 +118,7 @@ Docker を利用することで、Python 環境のセットアップなしに OT
 
 - Docker が利用できること
 - `make` が利用できること（Makefile を使わない場合は不要）
+- [uv](https://docs.astral.sh/uv/) が利用できること（`make decode` を使わない場合は不要）
 
 ## 使い方（推奨: Makefile）
 
@@ -119,6 +140,25 @@ make extract
 ```sh
 make help
 ```
+
+## QR コード画像から export.txt を作成する
+
+Google Authenticator のエクスポート画面の QR コードをスクリーンショットで保存した場合、次のコマンドでデコードし、URL を `export.txt` に追記できます。
+
+```sh
+make decode IMAGES="$HOME/Downloads/IMG_*.PNG"
+```
+
+`make decode` は `uv run decode_qr.py $(IMAGES) >> export.txt` を実行します。依存ライブラリ（`opencv-python-headless`）は uv が自動でインストールします。
+`export.txt` への追記のため、同じ画像で 2 回実行すると行が重複します。やり直す場合は `export.txt` を削除してから実行してください。
+
+スクリプトを直接実行することもできます。
+
+```sh
+uv run decode_qr.py image1.png image2.png
+```
+
+スクリーンショットもパスワード同等に扱い、作業後は削除してください。
 
 ## 使い方（Docker コマンドのみ）
 
@@ -164,7 +204,8 @@ docker run --rm -it extract_otp_secrets python src/extract_otp_secrets.py --help
 ## ファイル
 
 - [Dockerfile](Dockerfile): extract_otp_secrets 用の Docker イメージ定義
-- [Makefile](Makefile): `make extract` での実行を簡略化
+- [Makefile](Makefile): `make extract` / `make decode` での実行を簡略化
+- [decode_qr.py](decode_qr.py): 画像内の QR コードをデコードするスクリプト
 
 ## ライセンス
 
