@@ -1,6 +1,6 @@
 IMAGE_NAME = extract_otp_secrets
-.DEFAULT_GOAL := extract
-.PHONY: build display clean help
+.DEFAULT_GOAL := help
+.PHONY: build extract clean help
 
 build: ## build docker image
 	docker build -t $(IMAGE_NAME) .
